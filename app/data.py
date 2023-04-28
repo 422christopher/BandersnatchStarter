@@ -22,8 +22,7 @@ class Database:
 
     # Inserts a specified number of documents into the collection.
     def seed(self, amount: int):
-        self.monsters = [Monster().to_dict() for i in range(amount)]
-        return self.collection.insert_many(self.monsters)
+        return self.collection.insert_many(Monster().to_dict() for _ in range(amount))
 
     # Deletes all documents from the collection.
     def reset(self):
@@ -35,7 +34,7 @@ class Database:
 
     # Returns a DataFrame containing all documents in the collection
     def dataframe(self) -> DataFrame:
-        return DataFrame(list(self.collection.find({})))
+        return DataFrame(list(self.collection.find({}, {"_id": False, "Timestamp": False})))
 
     # Returns an HTML table representation of the DataFrame, or None if the collection is empty.
     def html_table(self) -> str:
@@ -43,3 +42,10 @@ class Database:
             return self.dataframe().to_html()
         else:
             return "The collection is empty."
+
+
+if __name__ == '__main__':
+    db = Database("1000 Outcast Monsters")
+    db.reset()
+    db.seed(1000)
+    print(db.count())

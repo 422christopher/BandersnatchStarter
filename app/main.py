@@ -10,8 +10,9 @@ from app.data import Database
 from app.graph import chart
 from app.machine import Machine
 
-SPRINT = 1
+SPRINT = 2
 APP = Flask(__name__)
+APP.db = Database('1000 Outcast Monsters')
 
 
 @APP.route("/")
@@ -28,12 +29,11 @@ def home():
 def data():
     if SPRINT < 1:
         return render_template("data.html")
-    db = Database("1000 Outcast Monsters")
-    db.seed(1000)
+    # db = Database("1000 Outcast Monsters")
     return render_template(
         "data.html",
-        count=db.count(),
-        table=db.html_table(),
+        count=APP.db.count(),
+        table=APP.db.html_table(),
     )
 
 
@@ -41,13 +41,13 @@ def data():
 def view():
     if SPRINT < 2:
         return render_template("view.html")
-    db = Database()
+    # db = Database("1000 Outcast Monsters")
     options = ["Level", "Health", "Energy", "Sanity", "Rarity"]
     x_axis = request.values.get("x_axis") or options[1]
     y_axis = request.values.get("y_axis") or options[2]
     target = request.values.get("target") or options[4]
     graph = chart(
-        df=db.dataframe(),
+        df=APP.db.dataframe(),
         x=x_axis,
         y=y_axis,
         target=target,
@@ -58,7 +58,7 @@ def view():
         x_axis=x_axis,
         y_axis=y_axis,
         target=target,
-        count=db.count(),
+        count=APP.db.count(),
         graph=graph,
     )
 
@@ -67,11 +67,11 @@ def view():
 def model():
     if SPRINT < 3:
         return render_template("model.html")
-    db = Database()
+    # db = Database('1000 Outcast Monsters')
     options = ["Level", "Health", "Energy", "Sanity", "Rarity"]
     filepath = os.path.join("app", "model.joblib")
     if not os.path.exists(filepath):
-        df = db.dataframe()
+        df = APP.db.dataframe()
         machine = Machine(df[options])
         machine.save(filepath)
     else:
