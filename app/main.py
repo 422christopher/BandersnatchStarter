@@ -52,6 +52,7 @@ def view():
         y=y_axis,
         target=target,
     ).to_json()
+
     return render_template(
         "view.html",
         options=options,
