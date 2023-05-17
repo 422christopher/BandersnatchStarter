@@ -10,7 +10,7 @@ from app.data import Database
 from app.graph import chart
 from app.machine import Machine
 
-SPRINT = 2
+SPRINT = 3
 APP = Flask(__name__)
 APP.db = Database('1000 Outcast Monsters')
 
@@ -41,7 +41,6 @@ def data():
 def view():
     if SPRINT < 2:
         return render_template("view.html")
-    # db = Database("1000 Outcast Monsters")
     options = ["Level", "Health", "Energy", "Sanity", "Rarity"]
     x_axis = request.values.get("x_axis") or options[1]
     y_axis = request.values.get("y_axis") or options[2]
@@ -68,13 +67,12 @@ def view():
 def model():
     if SPRINT < 3:
         return render_template("model.html")
-    # db = Database('1000 Outcast Monsters')
     options = ["Level", "Health", "Energy", "Sanity", "Rarity"]
     filepath = os.path.join("app", "model.joblib")
     if not os.path.exists(filepath):
         df = APP.db.dataframe()
         machine = Machine(df[options])
-        machine.save(filepath)
+        machine.save(filepath)  # saving the trained model
     else:
         machine = Machine.open(filepath)
     stats = [round(random_float(1, 250), 2) for _ in range(3)]
