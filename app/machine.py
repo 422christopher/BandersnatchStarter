@@ -28,3 +28,8 @@ class Machine:
 
     def info(self):
         return f"Base Model: {self.name}<br>Timestamp: {datetime.datetime.now()}"
+
+if __name__ == "__main__":
+    db = Database("1000 Outcast Monsters")
+    my_model = Machine(db.dataframe())
+    my_model.save('model.joblib')
